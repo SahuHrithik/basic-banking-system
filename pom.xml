@@ -1,28 +1,28 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>com.example</groupId>
-    <artifactId>nodejs-app</artifactId>
-    <version>1.0-SNAPSHOT</version>
-
+    <artifactId>your-java-project</artifactId>
+    <version>1.0.0</version>
+<!-- Add properties for Node.js and npm versions -->
     <properties>
-        <node.version>v14.17.6</node.version> <!-- Specify the Node.js version you want to use -->
-        <npm.version>7.24.0</npm.version>     <!-- Specify the npm version you want to use -->
+        <node.version>v14.17.0</node.version>
+        <npm.version>6.14.13</npm.version>
     </properties>
 
+    <!-- Add the frontend-maven-plugin -->
     <build>
-        <plugins>
-            <!-- Use the frontend-maven-plugin to manage Node.js and npm -->
+         <plugins>
             <plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
-                <version>1.11.1</version> <!-- Specify the version of the plugin -->
-
+                <version>1.11.3</version>
                 <executions>
-                    <!-- Install Node.js and npm locally during the 'install' phase -->
+                    <!-- Install Node.js and npm -->
                     <execution>
-                        <id>install node and npm</id>
+                        <id>install-node-and-npm</id>
                         <goals>
                             <goal>install-node-and-npm</goal>
                         </goals>
@@ -31,21 +31,7 @@
                             <npmVersion>${npm.version}</npmVersion>
                         </configuration>
                     </execution>
-
-                    <!-- Execute npm commands during the 'install' phase -->
-                    <execution>
-                        <id>npm install</id>
-                        <goals>
-                            <goal>npm</goal>
-                        </goals>
-                        <configuration>
-                            <arguments>install</arguments>
-                        </configuration>
-                    </execution>
-
-                    <!-- Add other npm commands as needed -->
-                    <!-- For example, you can add an execution to run 'npm run build' here -->
-
+                    <!-- You can add more executions for other npm/yarn commands here -->
                 </executions>
             </plugin>
         </plugins>
