@@ -29,7 +29,7 @@ pipeline {
         stage('Containerize (Docker)') {
             steps {
                 // Build a Docker image for the Node.js app
-                sh 'sudo docker build -t basic-banking .'
+                sh 'docker build -t basic-banking .'
                 // Push the Docker image to a registry (if needed)
                 // sh 'docker push your-docker-image-name'
             }
