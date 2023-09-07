@@ -3,7 +3,7 @@ pipeline {
     environment {
         DOCKER_REGISTRY_CREDENTIALS = credentials('DockerHub')
         DOCKER_IMAGE_NAME = 'basic-banking'
-        DOCKERFILE_PATH = 'https://github.com/SahuHrithik/basic-banking-system/blob/dev/Dockerfile'
+        DOCKERFILE_PATH = 'Dockerfile'
     }
     tools {
         // Install the Maven version configured as "M3" and add it to the path.
