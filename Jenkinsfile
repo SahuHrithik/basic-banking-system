@@ -44,7 +44,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.withRegistry('https://registry.example.com', DOCKER_REGISTRY_CREDENTIALS) {
+                    {
                         def customImage = docker.build(DOCKER_IMAGE_NAME, "-f ${DOCKERFILE_PATH} .")
                     }
                 }
