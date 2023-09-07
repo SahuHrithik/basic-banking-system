@@ -26,35 +26,35 @@ pipeline {
 
  
 
-        stage('Static Code Analysis') {
-            steps {
-                // Run SonarQube analysis
-                // Assumes SonarQube is configured in Jenkins
-                withSonarQubeEnv('Your_SonarQube_Server') {
-                    sh 'mvn sonar:sonar'
-                }
-            }
-        }
+        // stage('Static Code Analysis') {
+        //     steps {
+        //         // Run SonarQube analysis
+        //         // Assumes SonarQube is configured in Jenkins
+        //         withSonarQubeEnv('Your_SonarQube_Server') {
+        //             sh 'mvn sonar:sonar'
+        //         }
+        //     }
+        // }
 
  
 
-        stage('Containerize (Docker)') {
-            steps {
-                // Build a Docker image for the Node.js app
-                sh 'docker build -t your-docker-image-name .'
-                // Push the Docker image to a registry (if needed)
-                // sh 'docker push your-docker-image-name'
-            }
-        }
+        // stage('Containerize (Docker)') {
+        //     steps {
+        //         // Build a Docker image for the Node.js app
+        //         sh 'docker build -t your-docker-image-name .'
+        //         // Push the Docker image to a registry (if needed)
+        //         // sh 'docker push your-docker-image-name'
+        //     }
+        // }
 
  
 
-        stage('Deploy (Kubernetes)') {
-            steps {
-                // Deploy the Docker container to Kubernetes
-                sh 'kubectl apply -f kubernetes-deployment.yaml'
-            }
-        }
+        // stage('Deploy (Kubernetes)') {
+        //     steps {
+        //         // Deploy the Docker container to Kubernetes
+        //         sh 'kubectl apply -f kubernetes-deployment.yaml'
+        //     }
+        // }
 
  
 
