@@ -1,0 +1,110 @@
+---
+- name: Configure VM for DevOps Project
+  hosts: localhost
+  become: yes
+  tasks:
+    - name: Update APT package cache
+      apt:
+        update_cache: yes
+      when: ansible_os_family == "Debian"
+
+    - name: Install required system packages
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - git
+        - curl
+        - unzip
+        - # Add other necessary packages here
+
+    - name: Install Node.js and npm
+      apt:
+        name: 
+          - nodejs
+          - npm
+        state: present
+      when: ansible_os_family == "Debian"
+
+    - name: Install MongoDB (if needed)
+      apt:
+        name: mongodb
+        state: present
+      when: ansible_os_family == "Debian"
+
+    - name: Install Java OpenJDK 8
+      apt:
+        name: openjdk-8-jdk
+        state: present
+      when: ansible_os_family == 'Debian'
+
+    - name: Add Jenkins APT repository key
+      apt_key:
+        url: https://pkg.jenkins.io/debian/jenkins.io.key
+        state: present
+      when: ansible_os_family == 'Debian'
+
+    - name: Add Jenkins APT repository
+      apt_repository:
+        repo: deb https://pkg.jenkins.io/debian-stable binary/
+        state: present
+      when: ansible_os_family == 'Debian'
+
+    - name: Install Jenkins
+      apt:
+        name: jenkins
+        state: present
+      when: ansible_os_family == 'Debian'
+
+    - name: Start Jenkins service
+      service:
+        name: jenkins
+        state: started
+      when: ansible_os_family == 'Debian'
+
+    - name: Enable Jenkins service at boot
+      service:
+        name: jenkins
+        enabled: yes
+      when: ansible_os_family == 'Debian'
+
+    - name: Install Docker dependencies
+      apt:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - software-properties-common
+      when: ansible_os_family == 'Debian'
+
+    - name: Add Docker APT repository key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+      when: ansible_os_family == 'Debian'
+
+    - name: Add Docker APT repository
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable
+        state: present
+      when: ansible_os_family == 'Debian'
+
+    - name: Install Docker
+      apt:
+        name: docker-ce
+        state: present
+      when: ansible_os_family == 'Debian'
+
+    - name: Start Docker service
+      service:
+        name: docker
+        state: started
+      when: ansible_os_family == 'Debian'
+
+    - name: Enable Docker service at boot
+      service:
+        name: docker
+        enabled: yes
+      when: ansible_os_family == 'Debian'
