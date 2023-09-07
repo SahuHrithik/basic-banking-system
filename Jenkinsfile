@@ -1,10 +1,11 @@
 pipeline {
     agent any
-    // environment {
-    //     DOCKER_REGISTRY_CREDENTIALS = credentials('DockerHub')
-    //     DOCKER_IMAGE_NAME = 'basic-banking'
-    //     DOCKERFILE_PATH = 'Dockerfile'
-    // }
+    environment {
+        // Define your Docker Hub credentials ID here
+        DOCKERHUB_CREDENTIALS = 'DockerHub'
+        // Define your Docker image name and tag
+        DOCKER_IMAGE = 'basic-banking:latest'
+    }
     tools {
         // Install the Maven version configured as "M3" and add it to the path.
         maven "M3"
@@ -38,9 +39,10 @@ pipeline {
         stage('Push Docker Image to Docker Hub') {
             steps {
                 script {
-                    // Push the Docker image to Docker Hub
-                    docker.withRegistry('https://registry.hub.docker.com', 'DockerHub') {
-                        docker.image('basic-banking').push()
+                    // Authenticate with Docker Hub using credentials
+                    docker.withRegistry('https://registry.hub.docker.com', DOCKERHUB_CREDENTIALS) {
+                        // Push the Docker image to Docker Hub
+                        docker.image(DOCKER_IMAGE).push()
                     }
                 }
             }
