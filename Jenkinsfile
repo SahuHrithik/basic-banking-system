@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         // Define your Docker Hub credentials ID here
-        DOCKERHUB_CREDENTIALS = 'DockerHub'
+        DOCKERHUB_CREDENTIALS = 'dockerhub'
         // Define your Docker image name and tag
         DOCKER_IMAGE = 'basic-banking:latest'
     }
