@@ -2,61 +2,40 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
+    
+    <groupId>com.example</groupId>
+    <artifactId>your-java-project</artifactId>
+    <version>1.0.0</version>
 
-<groupId>com.example</groupId>
-<artifactId>nodejs-app</artifactId>
-<version>1.0.0</version>
+    <!-- Add properties for Node.js and npm versions -->
+    <properties>
+        <node.version>v14.17.0</node.version>
+        <npm.version>6.14.13</npm.version>
+    </properties>
 
-<properties>
-<node.version>v14.17.5</node.version>
-<npm.version>6.14.14</npm.version>
-</properties>
-
- 
-
+    <!-- Add the frontend-maven-plugin -->
     <build>
-<plugins>
-<plugin>
-<groupId>com.github.eirslett</groupId>
-<artifactId>frontend-maven-plugin</artifactId>
-<version>1.11.2</version>
-<configuration>
-<nodeVersion>${node.version}</nodeVersion>
-<npmVersion>${npm.version}</npmVersion>
-</configuration>
-<executions>
-<execution>
-<id>install node and npm</id>
-<goals>
-<goal>install-node-and-npm</goal>
-</goals>
-<phase>generate-resources</phase>
-<configuration>
-<nodeVersion>${node.version}</nodeVersion>
-<npmVersion>${npm.version}</npmVersion>
-</configuration>
-</execution>
-<execution>
-<id>npm install</id>
-<goals>
-<goal>npm</goal>
-</goals>
-<configuration>
-<arguments>install</arguments>
-</configuration>
-</execution>
-<execution>
-<id>npm run build</id>
-<goals>
-<goal>npm</goal>
-</goals>
-<configuration>
-<arguments>run build</arguments>
-</configuration>
-</execution>
-</executions>
-</plugin>
-</plugins>
-</build>
+        <plugins>
+            <plugin>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>1.11.3</version>
+                <executions>
+                    <!-- Install Node.js and npm -->
+                    <execution>
+                        <id>install-node-and-npm</id>
+                        <goals>
+                            <goal>install-node-and-npm</goal>
+                        </goals>
+                        <configuration>
+                            <nodeVersion>${node.version}</nodeVersion>
+                            <npmVersion>${npm.version}</npmVersion>
+                        </configuration>
+                    </execution>
+                    <!-- You can add more executions for other npm/yarn commands here -->
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
