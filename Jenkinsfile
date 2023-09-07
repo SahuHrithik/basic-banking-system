@@ -8,7 +8,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Get some code from a GitHub repository
-            git branch:'main',
+            git branch:'dev',
                 url:'https://github.com/Techwidot/basic-banking-system.git'
 
  
