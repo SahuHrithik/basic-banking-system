@@ -34,6 +34,17 @@ pipeline {
                 // sh 'docker push your-docker-image-name'
             }
         }
+
+        stage('Push Docker Image to Docker Hub') {
+            steps {
+                script {
+                    // Push the Docker image to Docker Hub
+                    docker.withRegistry('https://registry.hub.docker.com', 'DockerHub') {
+                        docker.image('basic-banking:latest').push()
+                    }
+                }
+            }
+        }
  
         // stage('Static Code Analysis') {
         //     steps {
