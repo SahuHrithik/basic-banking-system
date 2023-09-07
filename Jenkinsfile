@@ -40,7 +40,7 @@ pipeline {
                 script {
                     // Push the Docker image to Docker Hub
                     docker.withRegistry('https://registry.hub.docker.com', 'DockerHub') {
-                        docker.image('basic-banking:latest').push()
+                        docker.image('basic-banking').push()
                     }
                 }
             }
