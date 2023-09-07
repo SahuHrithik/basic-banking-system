@@ -1,10 +1,10 @@
 pipeline {
     agent any
-    environment {
-        DOCKER_REGISTRY_CREDENTIALS = credentials('DockerHub')
-        DOCKER_IMAGE_NAME = 'basic-banking'
-        DOCKERFILE_PATH = 'Dockerfile'
-    }
+    // environment {
+    //     DOCKER_REGISTRY_CREDENTIALS = credentials('DockerHub')
+    //     DOCKER_IMAGE_NAME = 'basic-banking'
+    //     DOCKERFILE_PATH = 'Dockerfile'
+    // }
     tools {
         // Install the Maven version configured as "M3" and add it to the path.
         maven "M3"
@@ -15,9 +15,6 @@ pipeline {
                 // Get some code from a GitHub repository
             git branch:'dev',
                 url:'https://github.com/SahuHrithik/basic-banking-system.git'
-
- 
-
             }            
         }
 
@@ -29,8 +26,15 @@ pipeline {
             }
         }
 
+        stage('Containerize (Docker)') {
+            steps {
+                // Build a Docker image for the Node.js app
+                sh 'docker build -t basic-banking .'
+                // Push the Docker image to a registry (if needed)
+                // sh 'docker push your-docker-image-name'
+            }
+        }
  
-
         // stage('Static Code Analysis') {
         //     steps {
         //         // Run SonarQube analysis
@@ -41,22 +45,22 @@ pipeline {
         //     }
         // }
 
-        stage('Build Docker Image') {
-            steps {
-                script {
-                        def customImage = docker.build(DOCKER_IMAGE_NAME, "-f ${DOCKERFILE_PATH} .")
-                }
-            }
-        }
-        stage('Push Docker Image') {
-            steps {
-                script {
-                    docker.withRegistry('https://registry.example.com', DOCKER_REGISTRY_CREDENTIALS) {
-                        customImage.push()
-                    }
-                }
-            }
-        }
+        // stage('Build Docker Image') {
+        //     steps {
+        //         script {
+        //                 def customImage = docker.build(DOCKER_IMAGE_NAME, "-f ${DOCKERFILE_PATH} .")
+        //         }
+        //     }
+        // }
+        // stage('Push Docker Image') {
+        //     steps {
+        //         script {
+        //             docker.withRegistry('https://registry.example.com', DOCKER_REGISTRY_CREDENTIALS) {
+        //                 customImage.push()
+        //             }
+        //         }
+        //     }
+        // }
     }
 }
 
