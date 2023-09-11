@@ -1,6 +1,6 @@
 ﻿# basic-banking-system
 This is a basic banking system created using Node.js and MongoDB database.
-new project edit..
+new project edit...
 ## Mongo DB Installation and Setup Instructions
 
 Use below command to deploy a MongoDB Container
