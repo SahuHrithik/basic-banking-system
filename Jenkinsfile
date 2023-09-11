@@ -27,6 +27,17 @@ pipeline {
             }
         }
 
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                    def scannerHome = tool 'SonarScanner'
+                    withSonarQubeEnv {
+                        sh "${scannerHome}/bin/sonar-scanner"
+                    }
+                }
+            }
+        }
+        
         stage('Containerize (Docker)') {
             steps {
                 // Build a Docker image for the Node.js app
@@ -45,6 +56,8 @@ pipeline {
                         docker.image(DOCKER_IMAGE).push()
                     }
                 }
+
+        
             }
         }
  
