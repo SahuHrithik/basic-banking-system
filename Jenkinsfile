@@ -56,17 +56,17 @@ pipeline {
                         docker.image(DOCKER_IMAGE).push()
                     }
                 }
+            }
+        }
 
-        stage('Deploy') {
+         stage('Deploy') {
             steps {
                 script {
                     sh 'npm start'
                 }
             }
         }
-            }
-        }
- 
+        
         // stage('Static Code Analysis') {
         //     steps {
         //         // Run SonarQube analysis
