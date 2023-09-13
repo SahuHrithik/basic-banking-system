@@ -59,41 +59,36 @@ pipeline {
             }
         }
         
-        stage('Deploy MongoDB Container') {
+        stage('Build and Run MongoDB Container') {
             steps {
                 script {
-                    // Run the MongoDB container with the provided environment variables
-                    def mongoContainer = docker.image('mongo').run(
-                        '-d --name mongo -p 27018:27017' +
-                        ' -e MONGO_INITDB_ROOT_USERNAME=mongoadmin' +
-                        ' -e MONGO_INITDB_ROOT_PASSWORD=App123Password' +
-                        ' -e MONGO_INITDB_DATABASE=bankDB'
-                    )
-                    
-                    // Wait for the container to be up and running (adjust timeout as needed)
-                    timeout(time: 5, unit: 'MINUTES') {
-                        waitUntil {
-                            def logs = mongoContainer.logs()
-                            return logs.contains('waiting for connections')
-                        }
-                    }
+                    // Build and run the MongoDB container
+                    docker.image('mongo')
+                        .withRun('-d --name mongo -p 27018:27017 ' +
+                                 '-e MONGO_INITDB_ROOT_USERNAME=mongoadmin ' +
+                                 '-e MONGO_INITDB_ROOT_PASSWORD=App123Password ' +
+                                 '-e MONGO_INITDB_DATABASE=bankDB')
+                        .start()
                 }
             }
         }
-        
-        stage('Grant MongoDB User Roles') {
+
+        stage('Wait for MongoDB to Start') {
+            steps {
+                // Add a sleep step to give MongoDB some time to start (adjust as needed)
+                sh 'sleep 30'
+            }
+        }
+
+        stage('Connect to MongoDB and Grant Permissions') {
             steps {
                 script {
-                    // Run commands inside the MongoDB container to grant roles
-                    def mongoShellCmd = """
-                        docker run --rm --link mongo:mongo mongo \
-                        mongosh --host mongo -u mongoadmin -p App123Password --authenticationDatabase admin bankDB <<EOF
-                        use admin
-                        db.grantRolesToUser('mongoadmin', [{ role: 'readWrite', db: 'bankDB' }])
-                        exit
-                        EOF
-                    """
-                    sh(script: mongoShellCmd, returnStatus: true)
+                    // Connect to MongoDB and grant permissions using mongosh
+                    docker.image('mongo')
+                        .inside("--link mongo:mongo") {
+                            sh 'mongo mongosh --host mongo -u mongoadmin -p App123Password --authenticationDatabase admin bankDB'
+                            sh 'echo "use admin; db.grantRolesToUser(\'mongoadmin\', [{ role: \'readWrite\', db: \'bankDB\' }]);" | mongo'
+                        }
                 }
             }
         }
