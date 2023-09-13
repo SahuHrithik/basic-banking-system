@@ -64,7 +64,7 @@ pipeline {
                 script {
                     // Run the MongoDB container with the provided environment variables
                     def mongoContainer = docker.image('mongo').run(
-                        '-d --name mongo -p 27017:27017' +
+                        '-d --name mongo -p 27018:27017' +
                         ' -e MONGO_INITDB_ROOT_USERNAME=mongoadmin' +
                         ' -e MONGO_INITDB_ROOT_PASSWORD=App123Password' +
                         ' -e MONGO_INITDB_DATABASE=bankDB'
