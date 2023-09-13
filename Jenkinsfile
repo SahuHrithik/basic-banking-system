@@ -58,6 +58,45 @@ pipeline {
                 }
             }
         }
+        
+        stage('Deploy MongoDB Container') {
+            steps {
+                script {
+                    // Run the MongoDB container with the provided environment variables
+                    def mongoContainer = docker.image('mongo').run(
+                        '-d --name mongo -p 27017:27017' +
+                        ' -e MONGO_INITDB_ROOT_USERNAME=mongoadmin' +
+                        ' -e MONGO_INITDB_ROOT_PASSWORD=App123Password' +
+                        ' -e MONGO_INITDB_DATABASE=bankDB'
+                    )
+                    
+                    // Wait for the container to be up and running (adjust timeout as needed)
+                    timeout(time: 5, unit: 'MINUTES') {
+                        waitUntil {
+                            def logs = mongoContainer.logs()
+                            return logs.contains('waiting for connections')
+                        }
+                    }
+                }
+            }
+        }
+        
+        stage('Grant MongoDB User Roles') {
+            steps {
+                script {
+                    // Run commands inside the MongoDB container to grant roles
+                    def mongoShellCmd = """
+                        docker run --rm --link mongo:mongo mongo \
+                        mongosh --host mongo -u mongoadmin -p App123Password --authenticationDatabase admin bankDB <<EOF
+                        use admin
+                        db.grantRolesToUser('mongoadmin', [{ role: 'readWrite', db: 'bankDB' }])
+                        exit
+                        EOF
+                    """
+                    sh(script: mongoShellCmd, returnStatus: true)
+                }
+            }
+        }
 
          stage('Deploy') {
             steps {
@@ -66,42 +105,5 @@ pipeline {
                 }
             }
         }
-        
-        // stage('Static Code Analysis') {
-        //     steps {
-        //         // Run SonarQube analysis
-        //         // Assumes SonarQube is configured in Jenkins
-        //         withSonarQubeEnv('Your_SonarQube_Server') {
-        //             sh 'mvn sonar:sonar'
-        //         }
-        //     }
-        // }
-
-        // stage('Build Docker Image') {
-        //     steps {
-        //         script {
-        //                 def customImage = docker.build(DOCKER_IMAGE_NAME, "-f ${DOCKERFILE_PATH} .")
-        //         }
-        //     }
-        // }
-        // stage('Push Docker Image') {
-        //     steps {
-        //         script {
-        //             docker.withRegistry('https://registry.example.com', DOCKER_REGISTRY_CREDENTIALS) {
-        //                 customImage.push()
-        //             }
-        //         }
-        //     }
-        // }
     }
 }
-
- 
-
-        // stage('Deploy (Kubernetes)') {
-        //     steps {
-        //         // Deploy the Docker container to Kubernetes
-        //         sh 'kubectl apply -f kubernetes-deployment.yaml'
-        //     }
-        // }
-
