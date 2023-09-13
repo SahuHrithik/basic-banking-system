@@ -61,16 +61,11 @@ pipeline {
         
         stage('Build and Run MongoDB Container') {
             steps {
-                script {
-                    // Build and run the MongoDB container
-                    def mongoContainer = docker.image('mongo').withRun('-d --name mongo -p 27018:27017 ' +
-                        '-e MONGO_INITDB_ROOT_USERNAME=mongoadmin ' +
-                        '-e MONGO_INITDB_ROOT_PASSWORD=App123Password ' +
-                        '-e MONGO_INITDB_DATABASE=bankDB')
-                    
-                    // Store the container ID in an environment variable
-                    env.MONGO_CONTAINER_ID = mongoContainer.id
-                }
+                // Run the Docker command to start the MongoDB container
+                sh 'docker run -d --name mongo -p 27018:27017 ' +
+                   '-e MONGO_INITDB_ROOT_USERNAME=mongoadmin ' +
+                   '-e MONGO_INITDB_ROOT_PASSWORD=App123Password ' +
+                   '-e MONGO_INITDB_DATABASE=bankDB mongo'
             }
         }
 
@@ -83,13 +78,10 @@ pipeline {
 
         stage('Connect to MongoDB and Grant Permissions') {
             steps {
-                script {
-                    // Connect to MongoDB and grant permissions using mongosh
-                    docker.image('mongo').inside("--link ${env.MONGO_CONTAINER_ID}:mongo") {
-                        sh 'mongo mongosh --host mongo -u mongoadmin -p App123Password --authenticationDatabase admin bankDB'
-                        sh 'echo "use admin; db.grantRolesToUser(\'mongoadmin\', [{ role: \'readWrite\', db: \'bankDB\' }]);" | mongo'
-                    }
-                }
+                // Connect to MongoDB and grant permissions using mongosh
+                sh 'docker run -it --link mongo:mongo --rm mongo mongosh ' +
+                   '--host mongo -u mongoadmin -p App123Password --authenticationDatabase admin bankDB' +
+                   '--eval "use admin; db.grantRolesToUser(\'mongoadmin\', [{ role: \'readWrite\', db: \'bankDB\' }]);"'
             }
         }
 
