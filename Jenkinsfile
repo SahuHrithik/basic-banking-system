@@ -79,8 +79,9 @@ pipeline {
         stage('Connect to MongoDB and Grant Permissions') {
             steps {
                 // Connect to MongoDB and grant permissions using mongosh
-                sh 'docker run -it --link mongo:mongo --rm mongo mongosh ' +
-                   '--host mongo -u mongoadmin -p App123Password --authenticationDatabase admin bankDB' +
+                sh 'docker run --link mongo:mongo --rm mongo mongosh ' +
+                   '--host mongo -u mongoadmin -p App123Password ' +
+                   '--authenticationDatabase admin bankDB ' +
                    '--eval "use admin; db.grantRolesToUser(\'mongoadmin\', [{ role: \'readWrite\', db: \'bankDB\' }]);"'
             }
         }
