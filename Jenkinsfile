@@ -63,12 +63,13 @@ pipeline {
             steps {
                 script {
                     // Build and run the MongoDB container
-                    docker.image('mongo')
-                        .withRun('-d --name mongo -p 27018:27017 ' +
-                                 '-e MONGO_INITDB_ROOT_USERNAME=mongoadmin ' +
-                                 '-e MONGO_INITDB_ROOT_PASSWORD=App123Password ' +
-                                 '-e MONGO_INITDB_DATABASE=bankDB')
-                        .start()
+                    def mongoContainer = docker.image('mongo').withRun('-d --name mongo -p 27018:27017 ' +
+                        '-e MONGO_INITDB_ROOT_USERNAME=mongoadmin ' +
+                        '-e MONGO_INITDB_ROOT_PASSWORD=App123Password ' +
+                        '-e MONGO_INITDB_DATABASE=bankDB')
+                    
+                    // Store the container ID in an environment variable
+                    env.MONGO_CONTAINER_ID = mongoContainer.id
                 }
             }
         }
@@ -84,11 +85,10 @@ pipeline {
             steps {
                 script {
                     // Connect to MongoDB and grant permissions using mongosh
-                    docker.image('mongo')
-                        .inside("--link mongo:mongo") {
-                            sh 'mongo mongosh --host mongo -u mongoadmin -p App123Password --authenticationDatabase admin bankDB'
-                            sh 'echo "use admin; db.grantRolesToUser(\'mongoadmin\', [{ role: \'readWrite\', db: \'bankDB\' }]);" | mongo'
-                        }
+                    docker.image('mongo').inside("--link ${env.MONGO_CONTAINER_ID}:mongo") {
+                        sh 'mongo mongosh --host mongo -u mongoadmin -p App123Password --authenticationDatabase admin bankDB'
+                        sh 'echo "use admin; db.grantRolesToUser(\'mongoadmin\', [{ role: \'readWrite\', db: \'bankDB\' }]);" | mongo'
+                    }
                 }
             }
         }
