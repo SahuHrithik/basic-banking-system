@@ -58,6 +58,33 @@ pipeline {
                 }
             }
         }
+        
+        stage('Build and Run MongoDB Container') {
+            steps {
+                // Run the Docker command to start the MongoDB container
+                sh 'docker run -d --name mongo -p 27018:27017 ' +
+                   '-e MONGO_INITDB_ROOT_USERNAME=mongoadmin ' +
+                   '-e MONGO_INITDB_ROOT_PASSWORD=App123Password ' +
+                   '-e MONGO_INITDB_DATABASE=bankDB mongo'
+            }
+        }
+
+        stage('Wait for MongoDB to Start') {
+            steps {
+                // Add a sleep step to give MongoDB some time to start (adjust as needed)
+                sh 'sleep 30'
+            }
+        }
+
+        stage('Connect to MongoDB and Grant Permissions') {
+            steps {
+                // Connect to MongoDB and grant permissions using mongosh
+                sh 'docker run --link mongo:mongo --rm mongo mongosh ' +
+                   '--host mongo -u mongoadmin -p App123Password ' +
+                   '--authenticationDatabase admin bankDB ' +
+                   '--eval "use admin; db.grantRolesToUser(\'mongoadmin\', [{ role: \'readWrite\', db: \'bankDB\' }]);"'
+            }
+        }
 
          stage('Deploy') {
             steps {
@@ -66,42 +93,5 @@ pipeline {
                 }
             }
         }
-        
-        // stage('Static Code Analysis') {
-        //     steps {
-        //         // Run SonarQube analysis
-        //         // Assumes SonarQube is configured in Jenkins
-        //         withSonarQubeEnv('Your_SonarQube_Server') {
-        //             sh 'mvn sonar:sonar'
-        //         }
-        //     }
-        // }
-
-        // stage('Build Docker Image') {
-        //     steps {
-        //         script {
-        //                 def customImage = docker.build(DOCKER_IMAGE_NAME, "-f ${DOCKERFILE_PATH} .")
-        //         }
-        //     }
-        // }
-        // stage('Push Docker Image') {
-        //     steps {
-        //         script {
-        //             docker.withRegistry('https://registry.example.com', DOCKER_REGISTRY_CREDENTIALS) {
-        //                 customImage.push()
-        //             }
-        //         }
-        //     }
-        // }
     }
 }
-
- 
-
-        // stage('Deploy (Kubernetes)') {
-        //     steps {
-        //         // Deploy the Docker container to Kubernetes
-        //         sh 'kubectl apply -f kubernetes-deployment.yaml'
-        //     }
-        // }
-
