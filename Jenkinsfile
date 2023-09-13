@@ -24,7 +24,7 @@ pipeline {
             steps {
                 // Install Node.js and npm (if not already done)
                 // Use Maven to build and test the Node.js application
-                sh 'mvn clean install'
+                sh 'npm install'
             }
         }
 
