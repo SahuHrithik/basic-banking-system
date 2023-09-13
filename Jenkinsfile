@@ -5,6 +5,7 @@ pipeline {
         DOCKERHUB_CREDENTIALS = 'dockerhub'
         // Define your Docker image name and tag
         DOCKER_IMAGE = 'sahuhrithik/basic-banking:latest'
+        NODE_ENV = 'production' 
     }
     tools {
         // Install the Maven version configured as "M3" and add it to the path.
