@@ -1,0 +1,11 @@
+Github - 
+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
+
+Jenkins -
+username and pass - Project
+
+Docker Hub- 
+dckr_pat_-6tovPWWdTn_YI65R09LbPJtYlU
+
+Sonarqube-
+squ_e1c4d796325107f6f00fce6784286d18b124b87f
