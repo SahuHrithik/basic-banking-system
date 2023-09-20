@@ -1,5 +1,5 @@
 ﻿# basic-banking-system
-This is a basic banking system created using Node.js and MongoDB database.
+This is a basic banking system created using Node.js and MongoDB database ..
 <<<<<<< HEAD
 new project edit1.
 =======
