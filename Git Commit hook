@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# Define the regular expression pattern for a valid commit message
+commit_message_pattern="^[A-Z]+-[0-9]+: .+"
+
+# Check if an argument (commit message file) is provided
+if [ $# -ne 1 ]; then
+    echo "Usage: $0 <commit_message_file>"
+    exit 1
+fi
+
+# Read the commit message from the file
+commit_message_file="$1"
+
+# Check if the file exists
+if [ ! -f "$commit_message_file" ]; then
+    echo "Error: Commit message file not found."
+    exit 1
+fi
+
+# Read the commit message from the file and strip leading/trailing whitespace
+commit_message=$(cat "$commit_message_file" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+
+# Check if the commit message matches the expected pattern
+if ! [[ $commit_message =~ $commit_message_pattern ]]; then
+    echo "Error: Commit message does not match the expected format."
+    echo "Please use the following format: 'JIRA-123: Your commit message here'"
+    exit 1
+fi
+
+# If the commit message format is valid, exit with success (0)
+exit 0
